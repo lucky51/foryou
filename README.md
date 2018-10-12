@@ -15,7 +15,7 @@ npm install foryou@latest
 
 ```html
 <div id="app">
-      <for-you-date-picker 
+      <for-you-pagination 
         prev-text="&laquo;"  
         next-text="&raquo;" 
         first-text="&laquo;&laquo;" 
@@ -41,7 +41,7 @@ npm install foryou@latest
           {{index + 1 + ' fixed'}}
         </a>
         <!--end-->
-      </for-you-date-picker>
+      </for-you-pagination>
       <hr />
     <button @click="moveTo">move to {{current}}</button>
   
