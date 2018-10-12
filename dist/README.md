@@ -110,5 +110,4 @@ data () {
 
 The plugin  is developing ...
 
-
 ![avatar](https://github.com/lucky51/foryou/blob/master/images/picker.gif?raw=true)
