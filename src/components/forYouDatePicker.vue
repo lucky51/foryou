@@ -160,8 +160,6 @@ export default {
             showMonths:false,
             startDate:new Date(-2209017600000),
             endDate:new Date(4102329600000),
-            y:0,
-            x:0,
             containerPosition:{
                 top:'0px',
                 left:'0px'
@@ -188,7 +186,6 @@ export default {
                  }
                 });
             }
-
         }
     },
     props:{
@@ -206,8 +203,7 @@ export default {
                 var month = dt.getMonth();
                 var date = dt.getDate();
                 if(/[yY]{4}/g.test(ftstr)){
-                   newstr = String.prototype.replace.call(ftstr,/[yY]{4}/g,fullyear);
-                    
+                   newstr = String.prototype.replace.call(ftstr,/[yY]{4}/g,fullyear);       
                 }else{
                    newstr =  String.prototype.replace.call(ftstr,/[yY]{2}/g,fullyear.toString().substring(2));
                 }
@@ -235,7 +231,6 @@ export default {
             }
             this.showYears = false;
             this.showMonths = true;
-
         },
         selectMonthFn(data){
             if(data.month !==  this.selectedMonth.getMonth()){
@@ -289,7 +284,6 @@ export default {
          getDateByValue:function(val){
             var tmp =this.getDate(val);
             return tmp.getDate();
-
          },
          isEmpty:function(val){
              return val ===null||val ===undefined;
@@ -379,8 +373,7 @@ export default {
             return {
                 year:this.selected.getFullYear(),
                 month:this.selected.getMonth(),
-                date:this.selected.getDate(),
-
+                date:this.selected.getDate()
             }
         },
         showSelected(){
