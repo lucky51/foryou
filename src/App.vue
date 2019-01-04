@@ -11,7 +11,10 @@
 <script>
 import forYou  from './components';
 import Vue from 'vue'
-Vue.use(forYou);
+//import eng from './lib/locale/en'
+//import fr from './lib/locale/fr'
+//Vue.use(forYou,eng);
+Vue.use(forYou,fr);
 
 
 export default {

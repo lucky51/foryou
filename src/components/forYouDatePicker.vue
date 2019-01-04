@@ -5,21 +5,25 @@
         </div>
         <div class="datepicker-container" v-show="showContainer" :style="containerPosition">      
             <div class="datepicker-date" v-show="showDates">
-                <datepicker-header :prev-action="prevMonth" :next-action="nextMonth">
-                    <button @click.stop="yearAction" class="datepicker-btn-year">{{showSelectedMonth.year}} </button> 年,
-                    <button @click.stop="monthAction" class="datepicker-btn-month">{{showSelectedMonth.month+1}}</button> 月
+                <datepicker-header 
+                :prev-action="prevMonth" 
+                :next-action="nextMonth" 
+                :disabled-pv-action="disabledMonthPrevAction" 
+                :disabled-nx-action="disabledMonthNextAction">
+                    <button @click.stop="yearAction" class="datepicker-btn-year">{{$$getYearText(showSelectedMonth.year)}} </button>
+                    <button @click.stop="monthAction" class="datepicker-btn-month">{{$$getMonthText(+showSelectedMonth.month+1)}}</button>
                 </datepicker-header>
                 <div class="datepicker-date-body">
                     <table>
                         <thead class="datepicker-date-days">
                         <tr>
-                            <th>一</th>
-                            <th>二</th>
-                            <th>三</th>
-                            <th>四</th>
-                            <th>五</th>
-                            <th>六</th>
-                            <th class="sunday">日</th>
+                            <th>{{$$getLang().el.datepicker.weeks['mon']}}</th>
+                            <th>{{$$getLang().el.datepicker.weeks['tue']}}</th>
+                            <th>{{$$getLang().el.datepicker.weeks['wed']}}</th>
+                            <th>{{$$getLang().el.datepicker.weeks['thu']}}</th>
+                            <th>{{$$getLang().el.datepicker.weeks['fri']}}</th>
+                            <th>{{$$getLang().el.datepicker.weeks['sat']}}</th>
+                            <th class="sunday">{{$$getLang().el.datepicker.weeks['sun']}}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -44,7 +48,7 @@
                     <button class="datepicker-btn-year">{{getSelected.year}} </button> 年
                 </datepicker-header>
                 <ul>
-                    <li @click.stop="selectYear(y)" :class="{'datepicker-years-current':y['current'], 'datepicker-years-selected':y['s']}" v-for="y in panelYears" :key="y.year">{{y.year}}</li>              
+                    <li @click.stop="selectYear(y)" :class="{'nextYear':y['l'],'prevYear':y['p'],'datepicker-years-current':y['current'], 'datepicker-years-selected':y['s']}" v-for="y in panelYears" :key="y.year">{{y.year}}</li>              
                 </ul>
             </div>
             <div class="datepicker-months" v-show="showMonths">
@@ -54,10 +58,10 @@
                     :actions-visibility="false"
                     :prev-action="prevYears" 
                     :next-action="nextYears">
-                        <button class="datepicker-btn-year">{{getSelected.month+1}} </button> 月
+                        <button class="datepicker-btn-year">{{' '+($$getMonthText(getSelected.month+1))+' '}} </button> 
                 </datepicker-header>
                 <ul>
-                    <li @click.stop="selectMonthFn(m)" v-for="m in panelMonths" :key="m.month" :class="{'datepicker-months-selected':m['s'],'datepicker-months-current':m['current']}">{{m.month}}</li>
+                    <li @click.stop="selectMonthFn(m)" v-for="m in panelMonths" :key="m.month" :class="{'datepicker-months-selected':m['s'],'datepicker-months-current':m['current']}">{{$$getMonthText(m.month)}}</li>
                 </ul>
             </div>
         </div>
@@ -149,6 +153,8 @@ export default {
             showContainer:false,
             disabledPrevAction:false,
             disabledNextAction:false,
+            disabledMonthNextAction:false,
+            disabledMonthPrevAction:false,
             selectedMonth:new Date(),
             rectArr :[[],[],[],[],[],[]],
             selected:new Date(),
@@ -246,10 +252,10 @@ export default {
             return (Array(len).join('0') + num).slice(-len);
         },
         nextYears(){
-            this.selectedMonth = new Date(this.selectedMonth.getFullYear()+40,this.selectedMonth.getMonth(),this.selectedMonth.getDate());
+            this.selectedMonth = new Date(this.selectedMonth.getFullYear()+10,this.selectedMonth.getMonth(),this.selectedMonth.getDate());
         },
         prevYears(){
-            this.selectedMonth = new Date(this.selectedMonth.getFullYear()-40,this.selectedMonth.getMonth(),this.selectedMonth.getDate());
+            this.selectedMonth = new Date(this.selectedMonth.getFullYear()-10,this.selectedMonth.getMonth(),this.selectedMonth.getDate());
         },
         toyyyyMMdd(date){
             var year = date.getFullYear();
@@ -305,7 +311,14 @@ export default {
              }            
              var seldate = this.selectedMonth.getDate();
              var nmonth = new Date(selyear,selmonth,seldate);
-             this.selectedMonth = nmonth;
+             if(nmonth>this.endDate){
+                 this.disabledMonthNextAction = true;
+             }else{
+                
+                  this.disabledMonthPrevAction = false;
+                  this.selectedMonth = nmonth;
+             }
+            
          },
          prevMonth(){
              var selyear = this.selectedMonth.getFullYear();
@@ -317,14 +330,19 @@ export default {
                  selyear = selyear -1;
              }
              var pmonth = new Date(selyear,selmonth,seldate);
-             this.selectedMonth = pmonth;
+             if(pmonth<this.startDate){
+                 this.disabledMonthPrevAction = true;
+             }else{
+                this.disabledMonthNextAction = false;
+                this.selectedMonth = pmonth;
+             }
          }
     },
     computed: {
         panelMonths(){
             var monthForSelected = this.selected.getMonth();
             var currentMonth = this.toDay.getMonth();
-            var monthformonths = this.selectedMonth.getMonth();            
+            var monthformonths = this.selectedMonth.getMonth();        
             return [...Array(12).keys()].map((item,idx,arr)=>({
                 month:item+1,
                 current:item===currentMonth,
@@ -338,26 +356,24 @@ export default {
             var yearforMonths = this.selectedMonth.getFullYear();
             var firstYear = this.startDate.getFullYear();
             var lastYear = this.endDate.getFullYear();
-            
-            var beginYear = yearforMonths-7< firstYear?  
-            (function(self){
-                self.disabledPrevAction = true;
-                return firstYear;
-            }(this)) 
-            :(function(self){
-                if(self.disabledPrevAction===true) self.disabledPrevAction = false;
-                return yearforMonths -9;
-            }(this));
-            var endYear = yearforMonths + 15  > lastYear ? 
-            (function(self){
-                self.disabledNextAction = true;
-                return lastYear;
-            }(this)) :(function(self){
-                if(self.disabledNextAction === true) self.disabledNextAction = false;
-                return yearforMonths + 15;
-            }(this));
-            for (let index = beginYear; index < endYear; index++) {
+            var beginYear = yearforMonths -yearforMonths%10-1;
+            var endYear = beginYear +11;
+            if(beginYear<firstYear){
+                beginYear = firstYear;
+                this.disabledPrevAction = true;
+            }else{
+                this.disabledPrevAction=false;
+            }
+            if(endYear>lastYear){
+                endYear =lastYear;
+                this.disabledNextAction =true;
+            }else{
+                this.disabledNextAction = false;
+            }
+            for (let index = beginYear; index <= endYear; index++) {
                 yearArr.push({
+                    p:index===beginYear&&index%10===9,
+                    l:index===endYear&&index%10===0,
                     year:index,
                     current:index===currentYear,
                     s:index===yearforSelected
@@ -388,6 +404,32 @@ export default {
                 date:this.selectedMonth.getDate()
             }
         },
+        isNaN(naN){
+            return Object.prototype.toString.call(naN)==='[object Number]' && naN.toString()==='NaN';
+        },
+        isLeapYear(year){
+            return !isNaN(+year) &&(function(){
+                return +year%4===0&&+year%100!==0
+            })();
+        },
+        getLastDate(year,month){
+            var plus =[1,3,5,7,8,10,12];
+            if(!isNaN(month)){
+                 if((m =plus.indexOf(+month))>-1){
+                     return 31;
+                 }else{
+                     if(+month===2){
+                         if(isLeapYear(year)){
+                             return 29;
+                         }else{
+                             return 28;
+                         }
+                     }else{
+                         return 30;
+                     }
+                 }
+            }
+        },
         bodySpans(){
             this.rectArr = [[],[],[],[],[],[]];
             //初始化条件 :得知当前日期和外层数组
@@ -398,10 +440,15 @@ export default {
             //根据当前月份的一号 求得 矩阵 的开始日期
             var crrday = crrfir.getDay();
             var crrbegin =crrfir.valueOf() - ((crrday - this.startWeek +7)%7) * 24*60*60*1000;
-            var crrend = crrbegin.valueOf()+(6*7-1)*24*60*60*1000;
+            var crrend = crrbegin.valueOf()+6*7*24*60*60*1000;
             let crrow =0;
-            let dateidx = 1;
-            while (crrbegin<=crrend ){  
+            let dateidx = 1;           
+            if(crrend>=this.endDate){
+               this.disabledMonthNextAction = true;
+            }else{
+                 this.disabledMonthNextAction = false;
+            }
+            while (crrbegin<crrend ){  
                 var crrcol = {
                     d:this.prefixInteger(this.getDateByValue(crrbegin),2),
                     now:crrbegin === this.toDay.valueOf(),
@@ -430,6 +477,7 @@ export default {
                 this.showMonths = false;
                 this.showDates = true;
                 this.showYears = false;
+                this.selectedMonth = this.selected;
             });
             window.onresize =()=>{
                 if(this.showContainer===true){
@@ -447,7 +495,7 @@ export default {
     div,ul,li,input,button,table,tr,td,th{padding:0px ;margin: 0px;box-sizing: border-box;}
     /* declare */
     $width:31.5;
-    $height-days:25;
+    $height-days:20;
     $height-header:35;
     /*css*/
 
@@ -497,7 +545,6 @@ export default {
                     padding:0px;        
                     background-color:#6666FF;
                     height:$height-header+px;
-                    
                    .current {
                         width:$width*7-70+px;
                         text-align: center;
@@ -511,6 +558,7 @@ export default {
                             color:white;
                             font-weight: bold;
                             cursor: pointer;
+                            border-bottom: 1px solid #6666ff;
                             &:hover{
                                 border-bottom: 1px solid #fff;
                             }
@@ -540,11 +588,11 @@ export default {
                 }
         .datepicker-months{
             background-color: white;
-            height: $height-days + $height-header + $width *7 +px;
+            height:  $height-header + $width *7 +px;
             ul{
                 list-style: none;
                 .datepicker-months-current{
-                    background-color: #66CCFF;
+                    background-color: #dfdfff;
                 }
                 .datepicker-months-selected{
                     color:red;
@@ -552,8 +600,8 @@ export default {
                 li{
                     width: ($width *7-2) /2+px;
                     display: inline-block;
-                    height: ($width*7 + $height-days) /6 +px;
-                    line-height: ($width*7 + $height-days) /6 +px;
+                    height: ($width*7) /6 +px;
+                    line-height: ($width*7 ) /6 +px;
                     
                     text-align: center;
                     &:hover{
@@ -565,26 +613,34 @@ export default {
         }
         .datepicker-years{
             background-color: white;
-            height: $height-days + $height-header + $width *7 +px;
+            height:  $height-header + $width *7 +px;
             ul{
                 margin: 0px auto;
                 list-style: none;
+                text-align: left;
                 .datepicker-years-current{
                     color:red;
                 }
                 .datepicker-years-selected{
-                    background-color: #66CCFF;
+                    background-color: #dfdfff;
+                }
+                .prevYear{
+                    color:#999999 !important;
+                }
+                .nextYear{
+                    color:#999999 !important;
                 }
                 li{
                     display: inline-block;
-                    width:$width*7 / 4-1 +px;
+                    width:$width*7 / 2-1 +px;
                     text-align: center;
-                    height:($width*7 + $height-days) /6 +px;
-                    line-height: ($width*7 + $height-days) /6 +px;
+                    height:($width*7 ) /6 +px;
+                    line-height: ($width*7 ) /6 +px;
                     cursor: pointer;
                     &:hover{
-                        background-color: #C0CCFF;                  
+                        background-color: #ccccff;                  
                     }
+                   
                 }
             }
         }   
@@ -608,7 +664,7 @@ export default {
                     }
                 }
                 .datepicker-date-footer{
-                    display: none;
+                 display: none;
                     button{
                         display: block;
                         width: 50px;

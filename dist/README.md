@@ -108,7 +108,15 @@ data () {
 <for-you-date-picker  format="yyyy/mm/dd" />
 ```
 
-The plugin  is developing ...
+Adding multilingual support.
 
+```js
+import forYou from 'foryou'
+import eng from './lib/locale/en'
+//import fr from './lib/locale/fr'
+Vue.use(forYou,eng);
+```
 
 ![avatar](https://github.com/lucky51/foryou/blob/master/images/picker.gif?raw=true)
+![avatar](https://github.com/lucky51/foryou/blob/master/images/picker1.gif?raw=true)
+![avatar](https://github.com/lucky51/foryou/blob/master/images/picker2.gif?raw=true)
