@@ -3,24 +3,29 @@
 export default{
     el:{
         datepicker:{
-            btn_year:"$$year+' 年,'",
-            months:{
-                  all:"$$month+' 月'"
-            },    
+            panel_date_btn_year:"$$year2CC($$year)+' 年'",
+            panel_year_btn_year: "$$year2CC($$year)",
+            years:"$$year2CC($$year)",
             // months:{
-            //     jan:'一月',
-            //     feb:'二月',
-            //     mar:'三月',
-            //     apr:'四月',
-            //     may:'五月',
-            //     jun:'六月',
-            //     jul:'七月',
-            //     aug:'八月',
-            //     sep:'九月',
-            //     oct:'十月',
-            //     nov:'十一月',
-            //     dec:'十二月'
-            // },
+            //       all:"$$month+' 月'"
+            // },    
+            today: "今天",
+            yesterday: "昨天",
+            tomorrow: "明天",
+            months:{
+                jan:'一月',
+                feb:'二月',
+                mar:'三月',
+                apr:'四月',
+                may:'五月',
+                jun:'六月',
+                jul:'七月',
+                aug:'八月',
+                sep:'九月',
+                oct:'十月',
+                nov:'十一月',
+                dec:'十二月'
+            },
             weeks:{
                 sun:'日',
                 mon:'一',

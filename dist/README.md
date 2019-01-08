@@ -15,19 +15,19 @@ npm install foryou@latest
 
 ```html
 <div id="app">
-      <for-you-pagination 
+      <for-you-pagination
         prev-text="&laquo;"  
-        next-text="&raquo;" 
-        first-text="&laquo;&laquo;" 
-        last-text="&raquo;&raquo;" 
+        next-text="&raquo;"
+        first-text="&laquo;&laquo;"
+        last-text="&raquo;&raquo;"
         :rotate="rotate"
-        :item-totals="totals" 
+        :item-totals="totals"
         :force-ellipses="true"  
-        :page.sync ="current" 
-        :max-size="5" 
-        :hide-if-empty="false" 
-        active-class="active-green" 
-        @page-change="pageChange" 
+        :page.sync ="current"
+        :max-size="5"
+        :hide-if-empty="false"
+        active-class="active-green"
+        @page-change="pageChange"
         :page-size="psize">
         <!--define  template ,you can delete it-->
         <!--begin-->
@@ -104,19 +104,98 @@ data () {
 
 ### foryou datepicker
 
-```html
-<for-you-date-picker  format="yyyy/mm/dd" />
-```
-
 Adding multilingual support.
 
 ```js
 import forYou from 'foryou'
-import eng from './lib/locale/en'
-//import fr from './lib/locale/fr'
-Vue.use(forYou,eng);
+import en from 'foryou/lib/umd/locale/en'
+import zh from 'foryou/lib/umd/locale/zh'
+import zh1 from 'foryou/lib/umd/locale/zh1'
+import fr from 'foryou/lib/umd/locale/fr'
+import ja from 'foryou/lib/umd/locale/ja'
+
+//You can define a global language environment for plug-ins.
+Vue.use(forYou,{lang:en});
+//Or rewrite the language environment of a component
 ```
 
-![avatar](https://github.com/lucky51/foryou/blob/master/images/picker.gif?raw=true)
-![avatar](https://github.com/lucky51/foryou/blob/master/images/picker1.gif?raw=true)
-![avatar](https://github.com/lucky51/foryou/blob/master/images/picker2.gif?raw=true)
+```html
+<ul>  
+      <li>
+          <for-you-date-picker  format="yyyy/mm/dd" :date.sync="dd" :lang="langzh" :has-aside="aside" />
+      </li>
+      <li>
+          <for-you-date-picker  format="yyyy/mm/dd" :date.sync="dd" :lang="langeng" :has-aside="aside" />
+      </li>
+       <li>
+          <for-you-date-picker  format="yyyy/mm/dd" :date.sync="dd" :lang="langfr" :has-aside="aside" />
+      </li>
+       <li>
+          <for-you-date-picker  format="yyyy/mm/dd" :date.sync="dd" :lang="langja" :has-aside="aside" />
+      </li>
+      <li>
+          <for-you-date-picker  format="yyyy/mm/dd" :date.sync="dd" :lang="langself" :has-aside="aside" />
+      </li>
+</ul>
+```
+
+```js
+ data () {
+    return {
+      dd:new Date(),
+      //Custom  Configuration
+      langself:{
+        el: {
+            datepicker: {
+                //support $$year
+                panel_date_btn_year: "'custom.' +$$year",
+                panel_year_btn_year: "$$year",
+                today: "tday",
+                yesterday: "yday",
+                tomorrow: "twm",
+                years: "$$year",
+                //support
+                // months:{
+                //   all:"$$month"
+                // },
+                months: {
+                    jan: 'Jan',
+                    feb: 'Feb',
+                    mar: 'Mar',
+                    apr: 'Apr',
+                    may: 'May',
+                    jun: 'Jun',
+                    jul: 'Jul',
+                    aug: 'Aug',
+                    sep: 'Sep',
+                    oct: 'Oct',
+                    nov: 'Nov',
+                    dec: 'Dec'
+                },
+                weeks: {
+                    sun: 'Su',
+                    mon: 'Mo',
+                    tue: 'Tu',
+                    wed: 'We',
+                    thu: 'Th',
+                    fri: 'Fr',
+                    sat: 'Sa'
+                }
+            }
+        }
+      }
+      langzh:zh,
+      langja:ja,
+      langeng:eng,
+      langfr:fr,
+      langzh1:zh1,
+      //Whether to display the label page or not ，default:false
+      aside:true
+    }
+  }
+```
+
+![avatar](https://github.com/lucky51/foryou/blob/master/images/picker3.gif?raw=true)
+![avatar](https://github.com/lucky51/foryou/blob/master/images/picker4.gif?raw=true)
+![avatar](https://github.com/lucky51/foryou/blob/master/images/picker5.gif?raw=true)
+![avatar](https://github.com/lucky51/foryou/blob/master/images/picker6.gif?raw=true)

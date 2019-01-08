@@ -3,7 +3,12 @@
 export default {
     el: {
         datepicker: {
-            btn_year: "$$year+' Year,'",
+            panel_date_btn_year: "'Year.' +$$year",
+            panel_year_btn_year:"$$year",
+            today:"tday",
+            yesterday:"yday",
+            tomorrow:"twm",
+            years:"$$year",
             months:{
                 jan:'Jan',
                 feb:'Feb',
